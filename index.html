@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список студентов</title>
+    <link rel="stylesheet" href="style.css">
+
+    
+</head>
+
+<body>
+    <main>
+        <div class="table">
+            <table id="table">
+                <tbody id="tbody">
+                    <tr>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <th class="nameHead">ФИО</th>
+                        <th class="ageHead">Дата рождения</th>
+                        <th class="startHead">Год начала обучения</th>
+                        <th class="facHead">Факультет</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-box">
+            <form action="" class="add-form" id="add-form">
+                <label for="name">Имя</label>
+                <input type="text" id="name" value="name">
+                <label for="surname">Фамилия</label>
+                <input type="text" id="surname" value="surname">
+                <label for="patronymic">Отчество</label>
+                <input type="text" id="patronymic" value="patronymic">
+                <label for="birthDate">Дата рождения</label>
+                <input type="date" id="birthDate" value="2005-11-21">
+                <label for="startDate">Год начала обучения</label>
+                <input type="number" min="2000" step="1" id="startDate" value="2005">
+                <label for="faculty">Факультет</label>
+                <input type="text" id="faculty" value="QW">
+                <button type="submit" id="submit">Добавить студента</button>
+            </form>
+        </div>
+    </main>
+    <script src="main.js"></script>
+</body>
+
+</html>
