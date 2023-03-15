@@ -236,4 +236,16 @@ facHeadBtn.onclick = function() {
 
 // 
 
+const filters = document.querySelectorAll(".input-search");
+
+filters.forEach(input => {
+
+    input.oninput  = function() {
+        const filterList = {};
+        filters.forEach(input =>{input.value.trim() ? filterList[`${input.id}`] = input.value.trim() : null});
+        console.log(filterList);
+   }
+
+});
+
 });
