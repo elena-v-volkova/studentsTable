@@ -44,6 +44,8 @@ const studentsList = [
 ]
 
 function getStudentItem(studentObj) {
+    const today = new Date;
+    
     const studentRow = document.createElement("tr");
     const studentName = document.createElement("td");
     studentName.innerText = studentObj.surname + " " + studentObj.name +  " " + studentObj.patronymic;
@@ -51,12 +53,26 @@ function getStudentItem(studentObj) {
 
     const studentBirthDate = document.createElement("td");
     const correctMonth = (studentObj.birthDate.getMonth() + 1).toString().length > 1 ? studentObj.birthDate.getMonth() + 1 : "0" + (studentObj.birthDate.getMonth() + 1);
-    studentBirthDate.innerText = studentObj.birthDate.getDate() + "." + correctMonth + "." + studentObj.birthDate.getFullYear();
+    let currAge = function() {
+        let thisYearBday = new Date(today.getFullYear(), studentObj.birthDate.getMonth(), studentObj.birthDate.getDate());
+        age = today.getFullYear() - studentObj.birthDate.getFullYear();
+        if (today < thisYearBday) {
+        age = age-1;
+        }
+        return age;
+    }
+    let declention = function (number, titles) {  
+        cases = [2, 0, 1, 1, 1, 2];  
+        return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];  
+    }
+    
+    let declensions = ['год', 'года', 'лет'];
+
+    studentBirthDate.innerText = studentObj.birthDate.getDate() + "." + correctMonth + "." + studentObj.birthDate.getFullYear() + " (" + currAge() + " " + declention(currAge(), declensions) + ")";
     studentRow.append(studentBirthDate);
 
     const studentStartDate = document.createElement("td");
     let startDateStatus;
-    const today = new Date;
     switch(today.getFullYear() - (+studentObj.startDate)) {
         case 0:  
             startDateStatus = " (1 курс)"
