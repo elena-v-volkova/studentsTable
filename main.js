@@ -14,7 +14,7 @@ const studentsList = [
         surname: "Кривцов",
         patronymic: "Иваненко",
         birthDate: new Date(2000, 0, 22),
-        startDate: '2016',
+        startDate: '2024',
         faculty: "Юридический",
     },
     {
@@ -22,7 +22,7 @@ const studentsList = [
     surname: "Кривцов",
     patronymic: "Иваненко",
     birthDate: new Date(2001, 0, 22),
-    startDate: '2016',
+    startDate: '2021',
     faculty: "Юридический",
     },   
     {
@@ -30,7 +30,7 @@ const studentsList = [
         surname: "Кривцов",
         patronymic: "Иваненко",
         birthDate: new Date(2000, 2, 22),
-        startDate: '2016',
+        startDate: '2022',
         faculty: "Юридический",
     },
     {
@@ -38,7 +38,7 @@ const studentsList = [
         surname: "Кривцов",
         patronymic: "Иваненко",
         birthDate: new Date(2010, 11, 22),
-        startDate: '2016',
+        startDate: '2023',
         faculty: "Юридический",
     },
 ]
@@ -55,7 +55,36 @@ function getStudentItem(studentObj) {
     studentRow.append(studentBirthDate);
 
     const studentStartDate = document.createElement("td");
-    studentStartDate.innerText = studentObj.startDate;
+    let startDateStatus;
+    const today = new Date;
+    switch(today.getFullYear() - (+studentObj.startDate)) {
+        case 0:  
+            startDateStatus = " (1 курс)"
+            break;
+        
+        case 1:
+            console.log( today.getMonth() + 1 < 9)
+            today.getMonth() + 1 < 9 ? startDateStatus = " (2 курс)" : startDateStatus = "(1 курс)";
+            break;
+        
+        case 2:  
+            today.getMonth() + 1 < 9 ? startDateStatus = " (3 курс)" : startDateStatus = "(2 курс)";
+            break;
+
+        case 3:  
+            today.getMonth() + 1 < 9 ? startDateStatus = " (4 курс)" : startDateStatus = "(3 курс)";
+            break;
+
+        case 4:
+            today.getMonth() + 1 < 9 ? startDateStatus = " (окончил)" : startDateStatus = "(4 курс)";
+            break;
+        
+        default:
+            startDateStatus = "";
+            break;
+        }
+
+    studentStartDate.innerText = studentObj.startDate + "-" +(+studentObj.startDate + 4) + startDateStatus;
     studentRow.append(studentStartDate);
 
     const studentFaculty = document.createElement("td");
