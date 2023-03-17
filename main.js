@@ -237,13 +237,26 @@ facHeadBtn.onclick = function() {
 // 
 
 const filters = document.querySelectorAll(".input-search");
+const filtered = [];
 
 filters.forEach(input => {
 
     input.oninput  = function() {
         const filterList = {};
-        filters.forEach(input =>{input.value.trim() ? filterList[`${input.id}`] = input.value.trim() : null});
-        console.log(filterList);
+        filters.forEach(input =>{input.value.trim() ? filterList[`${input.id.split('_').pop()}`] = input.value.trim() : null});
+
+        for (const student of studentsList) {
+            console.log(student)
+            for (const filter in filterList) {
+                console.log(student[filter])
+                student[filter] == input.value.trim() ? filtered.push(student) : null
+            }
+        }
+        if (Object.keys(filtered).length != 0) {
+            console.log(filtered)
+            clearTable();
+            renderStudentsTable(filtered)
+        }
    }
 
 });
