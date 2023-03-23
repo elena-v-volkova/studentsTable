@@ -79,7 +79,6 @@ function getStudentItem(studentObj) {
             break;
         
         case 1:
-            console.log( today.getMonth() + 1 < 9)
             today.getMonth() + 1 < 9 ? startDateStatus = " (2 курс)" : startDateStatus = "(1 курс)";
             break;
         
@@ -130,9 +129,10 @@ function clearTable() {
     }
 }
 
-
+let studentsListWithAdded = [...studentsList];
 
 addStudentSubmit.onclick  = function(event) {
+
     event.preventDefault();
 
     let oldMessages = document.querySelectorAll(".alertMessage")
@@ -178,15 +178,14 @@ addStudentSubmit.onclick  = function(event) {
             element.id == "birthDate" ? newStudent[element.id] = element.valueAsDate : newStudent[element.id] = element.value;
         });
 
-        studentsList.push(newStudent);
-        console.log(studentsList)
+        studentsListWithAdded.push(newStudent);
 
         inputs.forEach(element => {
             element.value = "";
         });
 
         clearTable()
-        renderStudentsTable(studentsList)
+        renderStudentsTable(studentsListWithAdded)
 
     }
 
@@ -201,7 +200,7 @@ const facHeadBtn = document.querySelector(".facHead");
 console.log(nameSortBtn)
 
 nameSortBtn.onclick = function() {
-    let nameSort = studentsList.sort(function(a,b) {
+    let nameSort = studentsListWithAdded.sort(function(a,b) {
         if ((a.surname + a.name + a.patronymic) < (b.surname + b.name + b.patronymic)) return -1;
     });
     clearTable()
@@ -209,7 +208,7 @@ nameSortBtn.onclick = function() {
 }
 
 ageSortBtn.onclick = function() {
-    let birthSort = studentsList.sort(function(a,b) {
+    let birthSort = studentsListWithAdded.sort(function(a,b) {
         if ((a.birthDate) < (b.birthDate)) return -1;
     });
     clearTable()
@@ -217,7 +216,7 @@ ageSortBtn.onclick = function() {
 }
 
 startSortBtn.onclick = function() {
-    let startSort = studentsList.sort(function(a,b) {
+    let startSort = studentsListWithAdded.sort(function(a,b) {
         if ((a.startDate) < (b.startDate)) return -1;
     });
     clearTable()
@@ -226,7 +225,7 @@ startSortBtn.onclick = function() {
 
 
 facHeadBtn.onclick = function() {
-    let facSort = studentsList.sort(function(a,b) {
+    let facSort = studentsListWithAdded.sort(function(a,b) {
         if ((a.faculty) < (b.faculty)) return -1;
     });
     clearTable()
@@ -234,31 +233,79 @@ facHeadBtn.onclick = function() {
 }
 
 
-// 
+// Фильтрация
+
+
+function filtering (arr, prop, value) {
+    let result = [];
+    value = value.trim();
+    let copyArr = [...arr];
+    for (const item of copyArr) {
+        switch(prop) {
+            case "name": 
+                (String(item.name + " " + item.surname + " " + item.patronymic).includes(value)) ? result.push(item) : null;
+                break;
+            case "birthDate": 
+                const today = new Date;
+                let thisYearBday = new Date(today.getFullYear(), item.birthDate.getMonth(), item.birthDate.getDate());
+                age = today.getFullYear() - item.birthDate.getFullYear();
+                if (today < thisYearBday) {
+                age = age-1;
+                }
+                String(age).includes(value) ? result.push(item) : null;
+                break;
+            default: 
+            (String(item[prop]).includes(value)) ? result.push(item) : null;
+            break;
+        }
+    }
+    return result;
+} 
+
 
 const filters = document.querySelectorAll(".input-search");
-const filtered = [];
 
 filters.forEach(input => {
 
-    input.oninput  = function() {
-        const filterList = {};
-        filters.forEach(input =>{input.value.trim() ? filterList[`${input.id.split('_').pop()}`] = input.value.trim() : null});
+    let areInputsEmpty;
 
-        for (const student of studentsList) {
-            console.log(student)
-            for (const filter in filterList) {
-                console.log(student[filter])
-                student[filter] == input.value.trim() ? filtered.push(student) : null
+    input.oninput  = function() {
+
+        const filterList = {};
+        
+        filters.forEach(input =>{
+            if (input.value.trim()) {
+                filterList[`${input.id.split('_').pop()}`] = input.value.trim(); 
+            } 
+
+            for (let i = 0; i < filters.length; i++) {
+                if (filters[i].value.trim()) {
+                    areInputsEmpty = false;
+                    break;
+                } else {
+                    areInputsEmpty = true;
+                }
             }
+
+
+        });
+
+        for (const filter in filterList) {        
+            let value = input.value;
+            if (Object.keys(filtering  (studentsListWithAdded, filter, value)).length != 0) {
+                clearTable();  
+                console.log(filter);
+
+                renderStudentsTable(filtering  (studentsListWithAdded, filter, value));
+            };
+             
         }
-        if (Object.keys(filtered).length != 0) {
-            console.log(filtered)
+
+        if (areInputsEmpty) {
             clearTable();
-            renderStudentsTable(filtered)
+            renderStudentsTable(studentsListWithAdded);
         }
    }
-
 });
 
 });
