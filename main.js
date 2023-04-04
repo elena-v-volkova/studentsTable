@@ -4,7 +4,7 @@ const studentsList = [
     {
      name: "Иван",
      surname: "Кривцов",
-     patronymic: "Иваненко",
+     patronymic: "Мартыненко",
      birthDate: new Date(2000, 0, 22),
      startDate: '2016',
      faculty: "Юридический",
@@ -12,7 +12,7 @@ const studentsList = [
     {
         name: "Андрей",
         surname: "Кривцов",
-        patronymic: "Иваненко",
+        patronymic: "Савченко",
         birthDate: new Date(2000, 0, 22),
         startDate: '2024',
         faculty: "Юридический",
@@ -28,7 +28,7 @@ const studentsList = [
     {
         name: "Кристина",
         surname: "Кривцов",
-        patronymic: "Иваненко",
+        patronymic: "Краснов",
         birthDate: new Date(2000, 2, 22),
         startDate: '2022',
         faculty: "Юридический",
@@ -36,7 +36,7 @@ const studentsList = [
     {
         name: "Антон",
         surname: "Кривцов",
-        patronymic: "Иваненко",
+        patronymic: "Сидоров",
         birthDate: new Date(2010, 11, 22),
         startDate: '2023',
         faculty: "Юридический",
@@ -234,34 +234,41 @@ facHeadBtn.onclick = function() {
 
 
 // Фильтрация
-
+let result = [];
 
 function filtering (arr, prop, value) {
-    let result = [];
-    value = value.trim();
-    let copyArr = [...arr];
-    for (const item of copyArr) {
-        switch(prop) {
-            case "name": 
-                (String(item.name + " " + item.surname + " " + item.patronymic).includes(value)) ? result.push(item) : null;
+
+    let copyArr;
+
+    if (result.length == 0) {
+        copyArr = [...arr];
+    } else {
+        copyArr = [...result];
+    }
+
+    result = [];
+
+        for (const item of copyArr) {
+            switch(prop) {
+                case "name": 
+                    (String(item.name + " " + item.surname + " " + item.patronymic).includes(value)) ? result.push(item) : clearTable();
+                    break;
+                case "birthDate": 
+                    const today = new Date;
+                    let thisYearBday = new Date(today.getFullYear(), item.birthDate.getMonth(), item.birthDate.getDate());
+                    age = today.getFullYear() - item.birthDate.getFullYear();
+                    if (today < thisYearBday) {
+                    age = age-1;
+                    }
+                    String(age).includes(value) ? result.push(item) : clearTable();
+                    break;
+                default: 
+                (String(item[prop]).includes(value)) ? result.push(item) : clearTable();
                 break;
-            case "birthDate": 
-                const today = new Date;
-                let thisYearBday = new Date(today.getFullYear(), item.birthDate.getMonth(), item.birthDate.getDate());
-                age = today.getFullYear() - item.birthDate.getFullYear();
-                if (today < thisYearBday) {
-                age = age-1;
-                }
-                String(age).includes(value) ? result.push(item) : null;
-                break;
-            default: 
-            (String(item[prop]).includes(value)) ? result.push(item) : null;
-            break;
-        }
+            }
     }
     return result;
 } 
-
 
 const filters = document.querySelectorAll(".input-search");
 
@@ -270,6 +277,7 @@ filters.forEach(input => {
     let areInputsEmpty;
 
     input.oninput  = function() {
+
 
         const filterList = {};
         
@@ -286,19 +294,16 @@ filters.forEach(input => {
                     areInputsEmpty = true;
                 }
             }
-
-
         });
 
         for (const filter in filterList) {        
-            let value = input.value;
+            let value = filterList[filter];
             if (Object.keys(filtering  (studentsListWithAdded, filter, value)).length != 0) {
                 clearTable();  
-                console.log(filter);
-
                 renderStudentsTable(filtering  (studentsListWithAdded, filter, value));
+
             };
-             
+
         }
 
         if (areInputsEmpty) {
